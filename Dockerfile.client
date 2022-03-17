@@ -25,8 +25,8 @@ RUN echo "alias certtool='certtool --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bas
 RUN echo "alias gnutls-cli='gnutls-cli --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
 RUN echo "alias gnutls-serv='gnutls-serv --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
 
-COPY test.psk /root/test.psk
+COPY tlskey.psk /root/tlskey.psk
 
-ENV PKCS11_PROXY_TLS_PSK_FILE="/root/test.psk"
+ENV PKCS11_PROXY_TLS_PSK_FILE="/root/tlskey.psk"
 ENV PKCS11_PROXY_SOCKET="tls://softhsm-server:2345"
 
