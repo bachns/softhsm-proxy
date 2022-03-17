@@ -18,7 +18,7 @@ git clone https://github.com/bachns/softhsm-proxy.git
 cd softhsm-proxy
 ```
 
-## Biên dịch softhsm-server image và pkcs11-client
+## Biên dịch softhsm-server image và pkcs11-client image
 
 ```
 docker build -f Dockerfile.server -t softhsm-server .
