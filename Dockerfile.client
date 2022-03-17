@@ -16,6 +16,14 @@ RUN apt-get update && \
 
 RUN git clone https://github.com/bachns/pkcs11-proxy && \
     cd pkcs11-proxy && cmake . && make && make install
+    
+ENV MODULE_PKCS11_PROXY="/usr/local/lib/libpkcs11-proxy.so"
+RUN echo "export MODULE_PKCS11_PROXY='${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN echo "alias pkcs11-tool='pkcs11-tool --module=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN echo "alias p11tool='p11tool --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN echo "alias certtool='certtool --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN echo "alias gnutls-cli='gnutls-cli --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN echo "alias gnutls-serv='gnutls-serv --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
 
 COPY test.psk /root/test.psk
 
