@@ -7,6 +7,9 @@
 
 FROM ubuntu:20.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Ho_Chi_Minh
+
 RUN apt-get update && \
     apt-get install -y libssl-dev libengine-pkcs11-openssl gnutls-bin \
     git-core make cmake libssl-dev libseccomp-dev opensc
