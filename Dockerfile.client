@@ -1,0 +1,20 @@
+# 
+# pkcs11-proxy (client)
+#
+# Bach Nguyen Sy
+# bachns@outlook.com
+# 
+
+FROM ubuntu:20.04
+
+RUN apt-get update && \
+    apt-get install -y libssl-dev libengine-pkcs11-openssl gnutls-bin \
+    git-core make cmake libssl-dev libseccomp-dev opensc
+
+RUN git clone https://github.com/bachns/pkcs11-proxy && \
+    cd pkcs11-proxy && cmake . && make && make install
+
+COPY test.psk /root/test.psk
+
+ENV PKCS11_PROXY_TLS_PSK_FILE="/root/test.psk"
+ENV PKCS11_PROXY_SOCKET="tls://localhost:5657"
