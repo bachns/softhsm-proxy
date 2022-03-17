@@ -1,17 +1,24 @@
+#
+# SoftHSM-server
+#
+# Bach Nguyen Sy
+# bachns@outlook.com
+# 
+
 FROM ubuntu:20.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Ho_Chi_Minh
+
 # Dependencies for softHSM / pkcs11
-RUN apt-get update && \
-    apt-get install -y git-core build-essential cmake libssl-dev libseccomp-dev wget autoconf automake libtool pkg-config
+RUN apt-get update && apt-get install -y git-core build-essential \
+	cmake libssl-dev libseccomp-dev wget autoconf automake libtool pkg-config
 
 ARG SOFTHSMV=2.5.0
 
-# Builging sfthsmv2/installing
 RUN git clone --branch ${SOFTHSMV} https://github.com/opendnssec/SoftHSMv2.git && \
-		cd SoftHSMv2 && \
-		sh autogen.sh && \
-		./configure --disable-gost && \
-		make && make install && \
+		cd SoftHSMv2 && sh autogen.sh && \
+		./configure --disable-gost && make && make install && \
 		export SOFTHSM2_CONF=/etc/softhsm2.conf
 
 
