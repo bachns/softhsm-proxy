@@ -21,15 +21,15 @@ cd softhsm-proxy
 ## Biên dịch softhsm-server image và pkcs11-client image
 
 ```
-docker build -f Dockerfile.server -t softhsm-server .
-docker build -f Dockerfile.client -t pkcs11-client .
+docker build -f Dockerfile.server -t bachns/softhsm-server .
+docker build -f Dockerfile.client -t bachns/pkcs11-client .
 ```
 
 ## softhsm-server container
 
 ```
 docker network create softhsm-net
-docker create --name softhsm-server --network softhsm-net --publish 2345:2345 softhsm-server
+docker create --network softhsm-net --name softhsm-server --hostname softhsm-server -p 2345:2345 bachns/softhsm-server
 docker start softhsm-server
 ```
 
@@ -37,18 +37,13 @@ docker start softhsm-server
 
 Mở một cửa sổ terminal khác chạy client
 ```
-docker run -d -it --name pkcs11-client --network softhsm-net pkcs11-client
+docker run -it --name pkcs11-client --network softhsm-net  bachns/pkcs11-client
 ```
 
-Vào bash của client container
+Kiểm tra kết nối tới softHSM sau khi vào bash của client container.
+Nếu kết quả xuất hiện token vgca_example_token là đã truy cập vào SoftHSM thành công.
 ```
-docker exec -it pkcs11-client bash 
-```
-
-Kiểm tra kết nối tới softHSM sau khi vào bash của client container
-```
-pkcs11-tool --show-info
-pkcs11-tool --list-slots
+p11tool --provider /usr/local/lib/libpkcs11-proxy.so --list-tokens
 ```
 
 

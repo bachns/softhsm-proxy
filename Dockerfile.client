@@ -10,23 +10,16 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Ho_Chi_Minh
 
-RUN apt-get update && \
-    apt-get install -y libssl-dev libengine-pkcs11-openssl gnutls-bin \
-    git-core make cmake libssl-dev libseccomp-dev opensc
+RUN apt-get update && apt-get install -y build-essential make cmake git \
+    libssl-dev libseccomp-dev gnutls-bin opensc net-tools inetutils-ping telnet
 
-RUN git clone https://github.com/bachns/pkcs11-proxy && \
-    cd pkcs11-proxy && cmake . && make && make install
-    
-ENV MODULE_PKCS11_PROXY="/usr/local/lib/libpkcs11-proxy.so"
-RUN echo "export MODULE_PKCS11_PROXY='${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
-RUN echo "alias pkcs11-tool='pkcs11-tool --module=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
-RUN echo "alias p11tool='p11tool --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
-RUN echo "alias certtool='certtool --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
-RUN echo "alias gnutls-cli='gnutls-cli --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
-RUN echo "alias gnutls-serv='gnutls-serv --provider=${MODULE_PKCS11_PROXY}'" >> ~/.bashrc
+RUN git clone https://github.com/SUNET/pkcs11-proxy \
+    && cd pkcs11-proxy \
+    && mkdir build && cd build \
+    && cmake .. \
+    && make && make install 
 
 COPY tlskey.psk /root/tlskey.psk
 
 ENV PKCS11_PROXY_TLS_PSK_FILE="/root/tlskey.psk"
 ENV PKCS11_PROXY_SOCKET="tls://softhsm-server:2345"
-

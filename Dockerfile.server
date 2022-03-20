@@ -10,28 +10,20 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Ho_Chi_Minh
 
-# Dependencies for softHSM / pkcs11
-RUN apt-get update && apt-get install -y git-core build-essential \
-	cmake libssl-dev libseccomp-dev wget autoconf automake libtool pkg-config
+RUN apt-get update && apt-get install -y softhsm build-essential make cmake git \
+    libssl-dev libseccomp-dev net-tools
 
-ARG SOFTHSMV=2.5.0
-
-RUN git clone --branch ${SOFTHSMV} https://github.com/opendnssec/SoftHSMv2.git && \
-		cd SoftHSMv2 && sh autogen.sh && \
-		./configure --disable-gost && make && make install && \
-		export SOFTHSM2_CONF=/etc/softhsm2.conf
-
-
-# building/installing pkcs11-proxy
-RUN git clone https://github.com/SUNET/pkcs11-proxy && \
-    cd pkcs11-proxy && cmake . && make && make install
-
+RUN git clone https://github.com/SUNET/pkcs11-proxy \
+    && cd pkcs11-proxy \
+    && mkdir build && cd build \
+    && cmake .. \
+    && make && make install
+    
+RUN softhsm2-util --init-token --slot 0 --label "vgca_example_token" --pin 123456 --so-pin 000000 --free
 
 COPY tlskey.psk /root/tlskey.psk
-
 
 EXPOSE 2345
 ENV PKCS11_DAEMON_SOCKET="tls://0.0.0.0:2345"
 ENV PKCS11_PROXY_TLS_PSK_FILE="/root/tlskey.psk"
-CMD [ "/usr/local/bin/pkcs11-daemon", "/usr/local/lib/softhsm/libsofthsm2.so" ]
-
+CMD [ "/usr/local/bin/pkcs11-daemon", "/usr/lib/softhsm/libsofthsm2.so" ]
