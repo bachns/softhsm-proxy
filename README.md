@@ -46,6 +46,40 @@ Nếu kết quả xuất hiện token vgca_example_token là đã truy cập và
 p11tool --provider /usr/local/lib/libpkcs11-proxy.so --list-tokens
 ```
 
+Tạo cặp khóa
+```
+pkcs11-tool --module /usr/local/lib/libpkcs11-proxy.so --login --login-type user --keypairgen --id "YOUR_KEY_ID" --label "YOUR_KEY_LABEL" --key-type rsa:3072
+```
+
+Xem cặp khóa vừa tạo và URL của các khóa
+```
+p11tool --provider /usr/local/lib/libpkcs11-proxy.so --login --list-all "TOKEN_URL"
+```
+
+Tạo certificate signing request (CSR)
+```
+certtool --provider=/usr/local/lib/libpkcs11-proxy.so --generate-request --load-pubkey "PUBLIC_KEY_URL" --outfile request.csr --load-privkey "PRIVATE_KEY_URL"
+```
+
+Sao chép tệp request.csr từ container sang máy host
+```
+docker cp <container_id>:/path/to/request.csr .
+```
+
+Sao chép cert đã được cấp từ host vào container
+```
+docker cp /path/to/<your_cert>.crt <container_id>:/path/to/<your_cert>.crt
+```
+
+Thực hiện nạp cert vào SoftHSM
+```
+pkcs11-tool --module /usr/local/lib/libpkcs11-proxy.so --login --pin 123456 --write-object "YOUR_CERT_FILE" --type cert --id "YOUR_KEY_ID"
+```
+
+Kiểm tra cert vừa nạp
+```
+p11tool --provider /usr/local/lib/libpkcs11-proxy.so --login --list-all "TOKEN_URL"
+```
 
 ## Dừng container
 
