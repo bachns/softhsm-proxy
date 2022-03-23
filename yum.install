@@ -1,0 +1,12 @@
+build-essential
+    minimal: yum íntall -y gcc gcc-c++ kernel-devel make
+    full: yum groupinstall "Development Tools"
+
+libssl-dev
+    yum install openssl-devel
+
+libseccomp-dev
+    yum install libseccomp-devel
+
+gnutls-bin
+    yum install gnutls-utils

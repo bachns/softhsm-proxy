@@ -58,7 +58,7 @@ p11tool --provider /usr/local/lib/libpkcs11-proxy.so --login --list-all "TOKEN_U
 
 Tạo certificate signing request (CSR)
 ```
-certtool --provider=/usr/local/lib/libpkcs11-proxy.so --generate-request --load-pubkey "PUBLIC_KEY_URL" --outfile request.csr --load-privkey "PRIVATE_KEY_URL"
+certtool --provider=/usr/local/lib/libpkcs11-proxy.so --generate-request --load-pubkey "PUBLIC_KEY_URL" --load-privkey "PRIVATE_KEY_URL" --outfile request.csr 
 ```
 
 Sao chép tệp request.csr từ container sang máy host
